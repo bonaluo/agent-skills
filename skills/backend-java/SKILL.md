@@ -108,6 +108,115 @@ mybatis:
   type-aliases-package: com.example.entity
 ```
 
+### 容器化部署
+
+Java 后端项目应包含以下容器化配置文件：
+
+#### Dockerfile
+
+```dockerfile
+# 构建阶段
+FROM maven:3.9-eclipse-temurin-17 AS builder
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests -f pom.xml
+
+# 运行阶段
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
+EXPOSE 8080
+
+# 使用非 root 用户运行
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
+```
+
+#### .dockerignore
+
+```
+target/
+.git/
+.gitignore
+*.md
+.vscode/
+.idea/
+*.iml
+```
+
+#### docker-compose.yml
+
+```yaml
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: java-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=your_db
+      - MYSQL_USER=root
+      # 敏感信息通过 secrets 或 env_file 管理
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=your_root_password
+      - MYSQL_DATABASE=your_db
+      - MYSQL_CHARSET=utf8mb4
+      - MYSQL_COLLATION=utf8mb4_unicode_ci
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - app-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+```
+
+#### docker-compose 常用命令
+
+| 操作 | 命令 |
+|------|------|
+| 构建并启动 | `docker-compose up --build` |
+| 后台启动 | `docker-compose up -d` |
+| 停止并删除 | `docker-compose down` |
+| 查看日志 | `docker-compose logs -f app` |
+| 重启服务 | `docker-compose restart app` |
+
 ## 注意事项
 
 - 使用阿里云 Maven 镜像加速依赖下载
@@ -115,3 +224,12 @@ mybatis:
 - MyBatis 使用 XML 映射文件时放在 `resources/mapper/` 目录
 - 使用 Lombok 减少样板代码
 - 配置文件中敏感信息使用环境变量或外部配置管理
+
+### 容器化注意事项
+
+- 使用多阶段构建减小镜像体积
+- 使用非 root 用户运行应用提高安全性
+- 敏感信息（密码、密钥）通过环境变量或 Docker Secrets 管理，不要硬编码在配置文件中
+- 使用 healthcheck 监控应用健康状态
+- MySQL 等数据持久化服务使用 volumes 挂载数据卷
+- 生产环境建议使用外部数据库，而非容器内 MySQL
