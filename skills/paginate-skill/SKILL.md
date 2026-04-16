@@ -1,6 +1,8 @@
 ---
 name: paginate-skill
 description: 这是一个通用的分页组件skill，提供固定位置的分页栏，包含页码、总页数、总记录数、跳转输入框等功能
+version: 20260417.0000
+update-url: https://github.com/bonaluo/agent-skills@paginate-skill
 ---
 
 # paginate-skill
