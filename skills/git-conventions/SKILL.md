@@ -1,7 +1,7 @@
 ---
 name: git-conventions
 description: Use when creating git commits or reviewing commit history
-version: 20260417.0000
+version: 20260417.0347
 update-url: https://github.com/bonaluo/agent-skills@git-conventions
 ---
 
@@ -16,7 +16,23 @@ update-url: https://github.com/bonaluo/agent-skills@git-conventions
 ```
 <type>: <简短描述>
 
-[可选正文]
+<正文内容，每行以 - 开头>
+
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+```
+
+**注意**：
+- 标题行和正文之间必须隔一行
+- 正文每行必须以 `-` 开头
+
+## 示例
+
+```
+feat: 添加用户登录功能
+
+- 实现用户名密码认证
+- 添加 Token 刷新机制
+- 集成现有用户表结构
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 ```
