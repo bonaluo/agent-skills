@@ -1,0 +1,117 @@
+---
+name: skill-user-habits
+description: 管理个人 skill 的创建、安装、使用规范。当需要创建新 skill、安装 skill 或使用 skill 时触发此技能。包含版本号管理、元数据规范、目录结构和软链接管理。
+version: 20260417.0245
+update-url: https://github.com/bonaluo/agent-skills@skill-user-habits
+---
+
+# 个人 Skill 使用习惯
+
+## 元数据规范
+
+所有 skill 必须包含以下元数据字段：
+
+```yaml
+version: yyyymmdd.hhmm  # 例如 20260417.0236，每次修改必须更新
+update-url: https://github.com/用户名/仓库名@skill名称
+```
+
+**version 格式说明**：`yyyymmdd.hhmm`，如 `20260417.0236` 表示 2026年4月17日 02:36 创建/更新。
+
+**update-url 格式说明**：从 git 仓库地址推导。
+- 仓库地址：`git@github.com:bonaluo/agent-skills.git`
+- Skill 名称：`demo-skill`
+- 更新地址：`https://github.com/bonaluo/agent-skills@demo-skill`
+
+---
+
+## 创建 Skill
+
+### 确定创建目录
+
+1. 检查 `~/.config/skill.env` 文件是否存在
+2. 如果存在，读取 `default-skill-dir` 值作为默认目录
+3. 如果不存在，询问用户默认创建位置，并创建该文件存储路径
+4. 如果用户指定了目录，优先使用用户指定的目录
+
+### 初始化步骤
+
+1. 在目标目录下创建 skill 目录（如 `skills/demo-skill/`）
+2. 创建 `SKILL.md`，包含完整的 YAML frontmatter（name、description、version、update-url）
+3. 根据需要添加 `references/`、`scripts/`、`assets/` 子目录
+
+---
+
+## 安装 Skill
+
+### 安装目录级别
+
+支持两级安装目录（按优先级从高到低）：
+1. **项目目录**：`./.agents/skills/<skill-name>/`
+2. **用户目录**：`~/.agents/skills/<skill-name>/`
+
+### 安装流程
+
+1. **必须获得用户确认**后才能安装
+2. 将 skill 内容复制到目标目录
+3. 根据当前智能体环境创建软链接：
+   - **Claude Code + 用户目录** → 创建 `~/.claude/skills/<skill-name>` 指向 `~/.agents/skills/<skill-name>`
+   - **Claude Code + 项目目录** → 创建 `~/.claude/skills/<skill-name>` 指向 `./.agents/skills/<skill-name>`
+
+### 软链接命令（Windows）
+
+```bash
+# 用户目录安装
+mklink /D "%USERPROFILE%\.claude\skills\<skill-name>" "%USERPROFILE%\.agents\skills\<skill-name>"
+
+# 项目目录安装
+mklink /D "%USERPROFILE%\.claude\skills\<skill-name>" "h:\note\agent-skills\.agents\skills\<skill-name>"
+```
+
+---
+
+## 使用 Skill
+
+### 启动前更新检查
+
+**重要**：使用任何 skill 前，必须检查并执行更新（两个条件缺一不可）：
+
+1. **读取 skill 的 `version` 字段**
+2. **读取 skill 的 `update-url` 字段**
+
+**更新条件**：只有同时满足以下情况才执行更新：
+- `version` 字段存在且非空
+- `update-url` 字段存在且非空
+
+**跳过更新**：缺少 `version` 或 `update-url` 时跳过更新检查。
+
+### 更新执行
+
+根据 `update-url` 从 GitHub 获取最新版本并替换本地文件。
+
+---
+
+## 示例
+
+### 新建 skill 时的元数据
+
+```yaml
+---
+name: my-new-skill
+description: 这是一个新 skill 的描述
+version: 20260417.0300
+update-url: https://github.com/bonaluo/agent-skills@my-new-skill
+---
+```
+
+### 安装确认提示
+
+```
+我将为你安装 skill：
+- 名称：demo-skill
+- 来源：h:\note\agent-skills\skills\demo-skill\
+- 目标目录：~/.agents/skills/
+- 软链接：~/.claude/skills/demo-skill
+
+是否确认安装？(y/n)
+```
