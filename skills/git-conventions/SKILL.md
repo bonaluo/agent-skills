@@ -61,6 +61,37 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 - 不超过 72 字符
 - 不使用句号结尾
 
+### 必须明确修改主体
+
+**标题中必须明确指出修改的主体（文件、类、skill 名称等），让读者一眼就知道本次提交修改了什么。**
+
+#### 错误示例
+
+```
+fix: 将修改skill必须更新version规范移至元数据规范部分
+docs: description 增加修改、更新 skill 触发条件
+feat: 增加用户管理模块
+```
+
+#### 正确示例
+
+```
+fix: 修改skill-user-habits将必须更新version规范移至元数据规范部分
+docs: 优化skill-user-habits description 增加修改、更新 skill 触发条件
+feat: 新增UserService类实现用户管理模块
+```
+
+### 禁止模糊描述
+
+禁止使用"增加xxx字段"、"修改xxx属性"等模糊描述，必须明确指出被修改的具体目标：
+
+| 禁止写法 | 正确写法 |
+|----------|----------|
+| `增加状态字段` | `User类增加status字段` |
+| `修改配置` | `config.json增加retryTimes配置` |
+| `优化文档` | `README.md优化安装步骤说明` |
+| `更新依赖` | `package.json更新vue版本至3.4` |
+
 ## 正文规则
 
 - 解释 **why** 而非 **what**
