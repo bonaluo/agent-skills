@@ -1,8 +1,9 @@
 ---
 name: git-conventions
 description: Use when creating git commits or reviewing commit history
-version: 20260417.0347
-update-url: https://github.com/bonaluo/agent-skills@git-conventions
+metadata:
+  version: 20260417.0347
+  update-url: https://github.com/bonaluo/agent-skills@git-conventions
 ---
 
 # Git 提交规范
