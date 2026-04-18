@@ -1,6 +1,6 @@
 ---
 name: skill-user-habits
-description: Manages personal skill creation, installation, and usage conventions. Triggers when creating, installing, or using skills. Covers version management, metadata specs, directory structure, and symlink management. / 管理个人 skill 的创建、安装、使用规范。当需要创建新 skill、安装 skill 或使用 skill 时触发此技能。包含版本号管理、元数据规范、目录结构和软链接管理。
+description: Manages personal skill creation, installation, updating and usage conventions. Triggers when creating, installing, updating, or using skills. Covers version management, metadata specs, directory structure, and symlink management. / 管理个人 skill 的创建、安装、更新、使用规范。当需要创建新 skill、修改 skill、更新 skill 或使用 skill 时触发此技能。包含版本号管理、元数据规范、目录结构和软链接管理。
 metadata:
   version: 20260418.1755
   update-url: https://github.com/bonaluo/agent-skills@skill-user-habits
