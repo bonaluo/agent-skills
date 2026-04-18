@@ -83,9 +83,44 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 - 修复 bug + 重构 → `fix`
 - 多个同等重要变更 → `chore`
 
+## 仅提交当前会话相关的内容
+
+**禁止使用 `git add -A` 或 `git add .` 全量提交。** 必须精确指定本次会话修改的文件。
+
+### 操作步骤
+
+1. 使用 `git status` 查看所有变更
+2. 仅将本次会话相关的文件加入暂存区：
+   ```bash
+   git add <文件1> <文件2>
+   ```
+3. 使用 `git diff --cached` 确认暂存内容
+4. 确认暂存区中没有混入其他无关变更
+
+### 判断标准
+
+如果一个文件：
+- 不是本次会话创建或修改的
+- 不是本次重构必需变更的（如格式化、迁移）
+
+则不应提交。
+
+### 示例
+
+```bash
+# 正确做法
+git add src/auth/login.ts tests/auth.test.ts
+git commit -m "feat: 添加用户登录功能"
+
+# 错误做法
+git add -A  # 会混入无关文件
+git add .   # 会混入无关文件
+```
+
 ## 提交前检查
 
-1. `git diff --cached` 确认变更内容
-2. 确认变更与提交信息匹配
-3. 确认有类型前缀
-4. `git log --oneline -3` 验证提交历史
+1. `git status` 确认暂存的文件都是本次会话相关
+2. `git diff --cached` 确认变更内容
+3. 确认变更与提交信息匹配
+4. 确认有类型前缀
+5. `git log --oneline -3` 验证提交历史
