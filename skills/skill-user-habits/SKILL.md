@@ -20,6 +20,29 @@ metadata:
 
 **version 格式说明**：`yyyymmdd.hhmm`，如 `20260417.0236` 表示 2026年4月17日 02:36 创建/更新。
 
+**自动获取版本号**（每次修改前执行）：
+
+先判断当前 shell 环境类型，执行下面的命令如果输出bash、sh、zsh等内容说明是linux环境，如果命令行的前缀包含ps则说明是powershell环境
+
+```bash
+# 判断方法
+echo $0
+```
+
+根据不同的环境执行不同的命令获取当前时间：
+
+```bash
+# Linux/macOS (bash/zsh)
+date "+%Y%m%d.%H%M"
+```
+
+```powershell
+# PowerShell
+Get-Date -Format "yyyyMMdd.HHmm"
+```
+
+> **Windows CMD 用户**：CMD 获取带前导零的时间较为繁琐，建议打开 PowerShell 执行上述命令。
+
 **update-url 格式说明**：从 git 仓库地址推导。
 - 仓库地址：`git@github.com:bonaluo/agent-skills.git`
 - Skill 名称：`demo-skill`
@@ -39,8 +62,9 @@ metadata:
 ### 初始化步骤
 
 1. 在目标目录下创建 skill 目录（如 `skills/demo-skill/`）
-2. 创建 `SKILL.md`，包含完整的 YAML frontmatter（name、description、metadata）
-3. 根据需要添加 `references/`、`scripts/`、`assets/` 子目录
+2. **自动获取当前版本号**：根据 shell 类型执行对应命令（见上方"自动获取版本号"）
+3. 创建 `SKILL.md`，包含完整的 YAML frontmatter（name、description、metadata）
+4. 根据需要添加 `references/`、`scripts/`、`assets/` 子目录
 
 ---
 
