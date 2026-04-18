@@ -2,7 +2,7 @@
 name: skill-user-habits
 description: Manages personal skill creation, installation, updating and usage conventions. Triggers when creating, installing, updating, or using skills. Covers version management, metadata specs, directory structure, and symlink management. / 管理个人 skill 的创建、安装、更新、使用规范。当需要创建新 skill、修改 skill、更新 skill 或使用 skill 时触发此技能。包含版本号管理、元数据规范、目录结构和软链接管理。
 metadata:
-  version: 20260418.1755
+  version: 20260418.1827
   update-url: https://github.com/bonaluo/agent-skills@skill-user-habits
 ---
 
@@ -139,6 +139,8 @@ npx skills add bonaluo/agent-skills@<skill-name>
 **不要自动打包 skill**：修改 skill 后，**禁止**执行 `python .agents/skills/skill-creator/scripts/package_skill.py` 打包命令。只有在用户明确要求时才进行打包操作。
 
 > **原因**：打包会生成 `.skill` 文件，容易与 git 追踪的文件混淆。每次修改后只需更新 `metadata.version` 即可。
+
+**修改 skill 必须更新 version**：任何对 skill 文件的修改（不论是创建、更新还是修改），在完成修改后**必须立即**更新该 skill 的 `metadata.version` 字段。Version 是判断 skill 是否需要更新的唯一依据，未及时更新的 version 会导致其他用户使用过时版本。
 
 ---
 
