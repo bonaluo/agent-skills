@@ -1,8 +1,8 @@
 ---
 name: skill-user-habits
-description: 管理个人 skill 的创建、安装、使用规范。当需要创建新 skill、安装 skill 或使用 skill 时触发此技能。包含版本号管理、元数据规范、目录结构和软链接管理。
+description: Manages personal skill creation, installation, and usage conventions. Triggers when creating, installing, or using skills. Covers version management, metadata specs, directory structure, and symlink management. / 管理个人 skill 的创建、安装、使用规范。当需要创建新 skill、安装 skill 或使用 skill 时触发此技能。包含版本号管理、元数据规范、目录结构和软链接管理。
 metadata:
-  version: 20260418.1612
+  version: 20260418.1630
   update-url: https://github.com/bonaluo/agent-skills@skill-user-habits
 ---
 
@@ -136,7 +136,7 @@ npx skills add bonaluo/agent-skills@<skill-name>
 ```yaml
 ---
 name: my-new-skill
-description: 这是一个新 skill 的描述
+description: This is a new skill description. / 这是一个新 skill 的描述
 metadata:
   version: 20260417.0300
   update-url: https://github.com/bonaluo/agent-skills@my-new-skill
