@@ -1,6 +1,6 @@
 ---
 name: git-conventions
-description: Use when creating git commits or reviewing commit history
+description: Use when creating git commits or reviewing commit history. / 使用此技能进行 Git 提交创建或提交历史审查。
 metadata:
   version: 20260417.0347
   update-url: https://github.com/bonaluo/agent-skills@git-conventions

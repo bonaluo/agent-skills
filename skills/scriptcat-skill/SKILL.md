@@ -1,6 +1,6 @@
 ---
 name: scriptcat-skill
-description: 这是一个关于ScriptCat浏览器脚本开发的skill，专门用于处理浏览器扩展脚本开发中的常见问题，如跨域请求、GM函数使用等。
+description: A skill for ScriptCat browser script development, specialized in handling common issues in browser extension script development, such as cross-origin requests, GM function usage, etc. / 这是一个关于ScriptCat浏览器脚本开发的skill，专门用于处理浏览器扩展脚本开发中的常见问题，如跨域请求、GM函数使用等。
 metadata:
   version: 20260417.0000
   update-url: https://github.com/bonaluo/agent-skills@scriptcat-skill

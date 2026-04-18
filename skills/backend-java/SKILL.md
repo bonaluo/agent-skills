@@ -1,6 +1,6 @@
 ---
 name: backend-java
-description: Spring Boot + Maven + MySQL + MyBatis Java 后端全栈技能，包含项目初始化、结构设计、MyBatis实践、Flyway数据库版本管理、容器化部署等。
+description: Spring Boot + Maven + MySQL + MyBatis Java backend full-stack skill, including project initialization, structure design, MyBatis practice, Flyway database versioning, containerized deployment, etc. / Spring Boot + Maven + MySQL + MyBatis Java 后端全栈技能，包含项目初始化、结构设计、MyBatis实践、Flyway数据库版本管理、容器化部署等。
 metadata:
   version: 20260417.0000
   update-url: https://github.com/bonaluo/agent-skills@backend-java

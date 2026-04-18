@@ -1,6 +1,6 @@
 ---
 name: doc-manage
-description: 结构化文档管理与索引系统。适用于创建、维护和管理项目文档，使用 index.doc.md 作为目录索引，每种文档类型存放在对应子目录中，支持多级目录结构。
+description: Structured document management and indexing system. Suitable for creating, maintaining, and managing project documents, using index.doc.md as the directory index, each document type stored in corresponding subdirectory, supporting multi-level directory structure. / 结构化文档管理与索引系统。适用于创建、维护和管理项目文档，使用 index.doc.md 作为目录索引，每种文档类型存放在对应子目录中，支持多级目录结构。
 metadata:
   version: 20260417.0000
   update-url: https://github.com/bonaluo/agent-skills@doc-manage

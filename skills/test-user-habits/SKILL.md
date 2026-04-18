@@ -1,7 +1,7 @@
 ---
 name: test-user-habits
 description: |
-  管理项目自动化测试的完整工作流程。当需要创建测试、运行测试、管理测试环境、执行 Playwright E2E 测试、或确保测试环境与生产环境隔离时触发此技能。覆盖测试目录规划、环境隔离策略、Playwright 脚本编写规范、测试输出管理。
+  Manages the complete workflow for project automated testing. Trigger this skill when creating tests, running tests, managing test environments, executing Playwright E2E tests, or ensuring test environment isolation from production. Covers test directory planning, environment isolation strategies, Playwright script writing standards, and test output management. / 管理项目自动化测试的完整工作流程。当需要创建测试、运行测试、管理测试环境、执行 Playwright E2E 测试、或确保测试环境与生产环境隔离时触发此技能。覆盖测试目录规划、环境隔离策略、Playwright 脚本编写规范、测试输出管理。
 metadata:
   version: 20260418.1745
   update-url: https://github.com/bonaluo/agent-skills@test-user-habits

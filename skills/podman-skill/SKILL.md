@@ -1,6 +1,6 @@
 ---
 name: podman-skill
-description: 这是一个本地使用 podman 容器的 skill，当使用容器相关的操作时可使用此技能。podman 可以替代 docker 使用，且无需守护进程。
+description: A skill for using podman containers locally. Use this skill when performing container-related operations. Podman can replace docker and does not require a daemon. / 这是一个本地使用 podman 容器的 skill，当使用容器相关的操作时可使用此技能。podman 可以替代 docker 使用，且无需守护进程。
 metadata:
   version: 20260417.0000
   update-url: https://github.com/bonaluo/agent-skills@podman-skill
