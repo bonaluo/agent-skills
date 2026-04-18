@@ -25,6 +25,8 @@ metadata:
 
 **version 格式说明**：`yyyymmdd.hhmm`，如 `20260417.0236` 表示 2026年4月17日 02:36 创建/更新。
 
+> **强制要求**：任何对 skill 文件的修改（创建、更新、修改内容），在完成修改后**必须立即**更新该 skill 的 `metadata.version`。Version 是判断 skill 是否需要更新的唯一依据，未及时更新会导致其他用户使用过时版本。
+
 **获取 version**（每次修改前执行）：
 
 先判断当前 shell 环境类型，执行下面的命令如果输出bash、sh、zsh等内容说明是linux环境，如果命令行的前缀包含ps则说明是powershell环境
@@ -139,8 +141,6 @@ npx skills add bonaluo/agent-skills@<skill-name>
 **不要自动打包 skill**：修改 skill 后，**禁止**执行 `python .agents/skills/skill-creator/scripts/package_skill.py` 打包命令。只有在用户明确要求时才进行打包操作。
 
 > **原因**：打包会生成 `.skill` 文件，容易与 git 追踪的文件混淆。每次修改后只需更新 `metadata.version` 即可。
-
-**修改 skill 必须更新 version**：任何对 skill 文件的修改（不论是创建、更新还是修改），在完成修改后**必须立即**更新该 skill 的 `metadata.version` 字段。Version 是判断 skill 是否需要更新的唯一依据，未及时更新的 version 会导致其他用户使用过时版本。
 
 ---
 
