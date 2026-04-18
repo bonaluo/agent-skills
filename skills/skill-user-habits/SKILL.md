@@ -2,7 +2,7 @@
 name: skill-user-habits
 description: 管理个人 skill 的创建、安装、使用规范。当需要创建新 skill、安装 skill 或使用 skill 时触发此技能。包含版本号管理、元数据规范、目录结构和软链接管理。
 metadata:
-  version: 20260417.0245
+  version: 20260418.1612
   update-url: https://github.com/bonaluo/agent-skills@skill-user-habits
 ---
 
@@ -114,6 +114,18 @@ mklink /D "%USERPROFILE%\.claude\skills\<skill-name>" "h:\note\agent-skills\.age
 ### 更新执行
 
 根据 `update-url` 从 GitHub 获取最新版本并替换本地文件。
+
+**更新命令**（两种方式等价，后者是前者的简化版）：
+
+```bash
+# 完整形式
+npx skills add https://github.com/bonaluo/agent-skills.git -s <skill-name>
+
+# 简化形式（GitHub 仓库可用）
+npx skills add bonaluo/agent-skills@<skill-name>
+```
+
+**简化版规则**：当 skill 仓库托管在 GitHub 时，`https://github.com/用户名/仓库名@skill名` 可简化为 `用户名/仓库名@skill名`。
 
 ---
 
