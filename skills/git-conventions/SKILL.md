@@ -189,3 +189,16 @@ git commit -F commit_message.txt
 # 删除commit文件
 Remove-Item commit_message.txt
 ```
+
+### 阶段四：检查提交信息
+
+使用以下命令确认提交信息是否正确：
+
+```bash
+git log -1 --format="%H%n%B" HEAD
+```
+
+**检查要点**：
+1. 确认提交信息格式符合规范
+2. 确认正文内容完整
+3. 确认中文编码显示正常（无乱码）
