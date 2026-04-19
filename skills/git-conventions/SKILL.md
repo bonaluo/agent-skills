@@ -150,3 +150,42 @@ git add .   # 会混入无关文件
 3. 确认变更与提交信息匹配
 4. 确认有类型前缀
 5. `git log --oneline -3` 验证提交历史
+
+### 阶段三：执行提交
+
+#### Linux Bash / Shell 环境
+
+使用 heredoc 语法直接提交多行信息：
+
+```bash
+git commit -m "$(cat <<'EOF'
+refactor: 重构git-conventions/SKILL.md文档结构
+
+- 将核心原则精简为两条关键原则
+- 新增分段标题增强文档可读性
+- 将错误/正确示例统一为表格格式
+- 移除Co-Authored-By行统一风格
+- 调整标题层级结构
+EOF
+)"
+```
+
+#### Windows PowerShell 环境
+
+需要通过文件中转来保证 UTF-8 编码：
+
+```powershell
+# 用 Out-File 指定 UTF8
+"refactor: 重构git-conventions/SKILL.md文档结构
+- 将核心原则精简为两条关键原则
+- 新增分段标题增强文档可读性
+- 将错误/正确示例统一为表格格式
+- 移除Co-Authored-By行统一风格
+- 调整标题层级结构" | Out-File -Encoding utf8 commit_message.txt
+
+# 使用生成的文件作为commit信息
+git commit -F commit_message.txt
+
+# 删除commit文件
+Remove-Item commit_message.txt
+```
