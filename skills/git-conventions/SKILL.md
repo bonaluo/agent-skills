@@ -170,6 +170,18 @@ EOF
 )"
 ```
 
+或者是使用 `-F -` 从标准输入中读取（比上面一种方式更简洁）
+
+```bash
+git commit -F - <<'EOF'
+fix: 优化TraceSearchThriftServiceImpl查询逻辑
+
+- 修复USER_ID_ONLY模式时间范围被错误限制3小时的问题，仅keyword模式限制3小时
+- 将原maxResults参数替换为pageNo+pageSize分页模型
+EOF
+
+```
+
 #### Windows PowerShell 环境
 
 需要通过文件中转来保证 UTF-8 编码：
