@@ -17,24 +17,43 @@ metadata:
 
 ## 一、定位 Git 仓库
 
-### 向上查找仓库
+### 执行顺序
 
-如果当前目录不是 Git 仓库，则向上逐级查找最近的 `.git` 目录：
+1. **先定位待提交文件所在的目录**
+2. **再从该目录向上查找 git 仓库**
+3. **最后切换到 git 仓库根目录**
+
+### 具体操作
+
+**第一步**：确定待提交文件所在的目录，切换到该目录：
 
 ```bash
-# 向上查找并切换到最近的 git 仓库根目录
+cd <待提交文件的目录>
+```
+
+> **注意**：后续的 git 操作必须在待提交文件所在目录下执行，以便正确识别所属的 git 仓库。
+
+**第二步**：从该目录向上逐级查找并切换到 git 仓库根目录：
+
+```bash
+# Bash / Shell 环境
 while [ ! -d .git ] && [ "$(pwd)" != "/" ]; do cd ..; done
 if [ -d .git ]; then echo "已切换到 git 仓库: $(pwd)"; else echo "未找到 git 仓库"; fi
 ```
 
-或者使用 PowerShell（Windows）：
-
 ```powershell
+# PowerShell 环境（Windows）
 while (-not (Test-Path ".git") -and (Get-Location).Path -ne "$env:SystemDrive\") { Set-Location ".." }
 if (Test-Path ".git") { Write-Host "已切换到 git 仓库: $(Get-Location)" } else { Write-Host "未找到 git 仓库" }
 ```
 
-**重要**：在执行任何 `git` 操作前，必须先确认已处于正确的 git 仓库中。
+**第三步**：验证当前处于正确的 git 仓库：
+
+```bash
+git rev-parse --is-inside-work-tree  # 应返回 true
+```
+
+**重要**：必须先完成以上三步，确保已处于待提交文件所属的 git 仓库根目录后，才能执行后续的 `git add`、`git commit` 等操作。
 
 ---
 
