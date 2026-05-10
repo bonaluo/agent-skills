@@ -15,7 +15,30 @@ metadata:
 
 ---
 
-## 一、提交信息格式
+## 一、定位 Git 仓库
+
+### 向上查找仓库
+
+如果当前目录不是 Git 仓库，则向上逐级查找最近的 `.git` 目录：
+
+```bash
+# 向上查找并切换到最近的 git 仓库根目录
+while [ ! -d .git ] && [ "$(pwd)" != "/" ]; do cd ..; done
+if [ -d .git ]; then echo "已切换到 git 仓库: $(pwd)"; else echo "未找到 git 仓库"; fi
+```
+
+或者使用 PowerShell（Windows）：
+
+```powershell
+while (-not (Test-Path ".git") -and (Get-Location).Path -ne "$env:SystemDrive\") { Set-Location ".." }
+if (Test-Path ".git") { Write-Host "已切换到 git 仓库: $(Get-Location)" } else { Write-Host "未找到 git 仓库" }
+```
+
+**重要**：在执行任何 `git` 操作前，必须先确认已处于正确的 git 仓库中。
+
+---
+
+## 二、提交信息格式
 
 ### 格式说明
 
@@ -107,7 +130,7 @@ feat: 添加用户登录功能
 
 ---
 
-## 二、分阶段检查
+## 三、分阶段检查
 
 ### 阶段一：暂存文件检查
 
