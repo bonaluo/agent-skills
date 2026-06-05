@@ -1,8 +1,9 @@
 ---
 name: skill-user-habits
 description: Manages personal skill creation, installation, updating and usage conventions. Triggers when creating, installing, updating, or using skills. Covers version management, metadata specs, directory structure, and symlink management. / 管理个人 skill 的创建、安装、更新、使用规范。当需要创建新 skill、修改 skill、更新 skill 或使用 skill 时触发此技能。包含版本号管理、元数据规范、目录结构和软链接管理。
+tags: [skills, conventions, metadata, authoring]
 metadata:
-  version: 20260418.1827
+  version: 20260605.2245
   update-url: https://github.com/bonaluo/agent-skills@skill-user-habits
 ---
 
@@ -16,6 +17,25 @@ metadata:
 metadata:
   version: yyyymmdd.hhmm  # 例如 20260417.0236，每次修改必须更新
   update-url: https://github.com/用户名/仓库名@skill名称
+```
+
+**推荐字段**（可选但很有用）：
+
+```yaml
+tags: [分类标签1, 标签2, ...]  # 辅助 skill 发现和归类
+```
+
+**完整 frontmatter 示例**：
+
+```yaml
+---
+name: my-skill
+description: English description / 中文描述
+tags: [tag1, tag2, tag3]
+metadata:
+  version: 20260417.0300
+  update-url: https://github.com/bonaluo/my-repo@my-skill
+---
 ```
 
 **description 格式说明**（必须使用中英双语）：
@@ -144,21 +164,7 @@ npx skills add bonaluo/agent-skills@<skill-name>
 
 ---
 
-## 示例
-
-### 新建 skill 时的元数据
-
-```yaml
----
-name: my-new-skill
-description: This is a new skill description. / 这是一个新 skill 的描述
-metadata:
-  version: 20260417.0300
-  update-url: https://github.com/bonaluo/agent-skills@my-new-skill
----
-```
-
-### 安装确认提示
+## 安装确认提示
 
 ```
 我将为你安装 skill：
