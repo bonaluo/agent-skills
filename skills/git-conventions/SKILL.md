@@ -2,7 +2,7 @@
 name: git-conventions
 description: Use when creating git commits or reviewing commit history. / 使用此技能进行 Git 提交创建或提交历史审查。
 metadata:
-  version: 20260419.1606
+  version: 20260605.1547
   update-url: https://github.com/bonaluo/agent-skills@git-conventions
 ---
 
@@ -12,6 +12,7 @@ metadata:
 
 1. **提交信息必须遵循指定的格式** — 使用统一格式确保可读性和可追溯性
 2. **提交前应该逐个检查提交的内容** — 确保只提交本次会话相关的变更
+3. **提交前必须检查敏感信息** — diff 中不得包含 API Key、Token、密码、SSH 私钥等敏感数据，检查不通过则禁止提交
 
 ---
 
@@ -43,7 +44,7 @@ if [ -d .git ]; then echo "已切换到 git 仓库: $(pwd)"; else echo "未找�
 
 ```powershell
 # PowerShell 环境（Windows）
-while (-not (Test-Path ".git") -and (Get-Location).Path -ne "$env:SystemDrive\") { Set-Location ".." }
+while (-not (Test-Path ".git") -and (Get-Location).Path -ne "$env:SystemDrive\\") { Set-Location ".." }
 if (Test-Path ".git") { Write-Host "已切换到 git 仓库: $(Get-Location)" } else { Write-Host "未找到 git 仓库" }
 ```
 
@@ -185,15 +186,76 @@ git add -A  # 会混入无关文件
 git add .   # 会混入无关文件
 ```
 
-### 阶段二：提交前检查
+### 阶段二（安全审查）：检查敏感信息
+
+**检查暂存区 diff 中是否包含凭据、Token、密钥、个人地址等敏感信息。此阶段检查不通过则禁止提交。**
+
+#### 检查内容
+
+| 检查项 | 示例 | 处理方式 |
+|--------|------|----------|
+| API Key / Token | `sk-xxxxx`、`ghp_xxxxx`、`Bearer xxx` | 替换为占位符，提交 `.env.example` |
+| 用户名密码 | `admin:password123`、`user=root` | 替换为 `admin:changeme` |
+| 连接串含密码 | `mysql://user:pass@host/db`、`redis://:pass@host` | 替换密码为占位符 |
+| SSH 私钥 | `-----BEGIN OPENSSH PRIVATE KEY-----` | 禁止提交 |
+| 证书/密钥文件 | `*.pem`、`*.key`、`*.p12` | 检查 `.gitignore` 是否已忽略 |
+| 个人地址/域名 | `张三`、`13800138000`、`user@company.com` | 替换为占位符 |
+| 内网 IP / 本地路径 | `192.168.x.x`、`/home/用户名/`、`C:\Users\用户名\` | 替换为示例值 |
+| 真实端口 | `50000`、`5432` | 评估是否暴露（公开仓库应替换） |
+
+#### 操作步骤
+
+```bash
+# 1. 查看暂存区 diff，逐行检查敏感信息
+git diff --cached
+
+# 2. 同时检查是否缺少对应的 .env.example 文件
+#    如果提交了 .env / config.json 等配置，必须同时提供 .env.example
+ls -la .env.example 2>/dev/null || echo "⚠️ 缺少 .env.example"
+
+# 3. 还检查 .gitignore 是否包含了 .env 等敏感文件
+grep -E "\.env$|\.env\.local|credentials|secret|token" .gitignore 2>/dev/null || echo "⚠️ .gitignore 未配置 .env 忽略规则"
+```
+
+#### 安全否决规则
+
+以下情况**直接阻止提交**，直到用户修复：
+
+1. **diff 中包含任何 API Key / Token / 密码明文** — 必须替换为占位符
+2. **提交了 `.env` 但未提供 `.env.example`** — 必须提供示例文件
+3. **提交了 SSH 私钥、.pem 证书** — 必须移除
+4. **`config.yaml` / `config.json` 等配置中有明文密码** — 必须提取到 `.env` 并用占位符替代
+
+#### 提交前修正模式
+
+```bash
+# 如果本地使用了敏感值，创建 .env.example 用占位符替代
+echo "# 数据库配置" > .env.example
+echo "DB_USER=admin" >> .env.example
+echo "DB_PASSWORD=changeme" >> .env.example
+echo "DB_HOST=localhost" >> .env.example
+
+# 确保 .env 被 gitignore
+echo ".env" >> .gitignore
+git add .gitignore
+
+# 从暂存区移除 .env 文件（如果有）
+git rm --cached .env 2>/dev/null || true
+```
+
+**检查不通过时，不允许执行 `git commit`。必须修正后才能继续提交。**
+
+### 阶段三：提交前检查
 
 1. `git status` 确认暂存的文件都是本次会话相关
-2. `git diff --cached` 确认变更内容
+2. `git diff --cached` 确认变更内容（已完成安全审查）
 3. 确认变更与提交信息匹配
 4. 确认有类型前缀
 5. `git log --oneline -3` 验证提交历史
 
-### 阶段三：执行提交
+### 阶段四：执行提交
+
+> ⚠️ **执行提交前必须确保阶段二（安全审查）已通过。** 阶段二是硬性检查，不通过则禁止提交。
 
 #### Linux Bash / Shell 环境
 
@@ -244,7 +306,7 @@ git commit -F commit_message.txt
 Remove-Item commit_message.txt
 ```
 
-### 阶段四：检查提交信息
+### 阶段五：检查提交信息
 
 使用以下命令确认提交信息是否正确：
 
