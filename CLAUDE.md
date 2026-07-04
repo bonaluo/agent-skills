@@ -14,6 +14,7 @@ skills/                         # 已发布的技能
     ├── backend-java/           # Spring Boot + Maven + MySQL + MyBatis
     ├── scriptcat-skill/        # 浏览器用户脚本开发
     ├── podman-skill/           # 容器操作
+    ├── docker-deploy/          # Docker 标准化构建部署流程
     └── paginate-skill/         # 分页组件
 ```
 
@@ -49,6 +50,7 @@ skill-name/
 | backend-java | Java 后端服务，Spring Boot、Maven、MyBatis、MySQL、Flyway |
 | scriptcat-skill | 浏览器用户脚本，GM 函数，跨域请求 |
 | podman-skill | 本地容器操作（先使用远程连接 `podman-remote-win`） |
+| docker-deploy | Docker 标准化构建部署，Dockerfile → Compose → env → 多环境 |
 | paginate-skill | 固定位置分页 UI 组件 |
 | doc-manage | 结构化文档管理，使用 index.doc.md 索引，分类子目录组织 |
 | skill-creator | 创建或更新技能 |
