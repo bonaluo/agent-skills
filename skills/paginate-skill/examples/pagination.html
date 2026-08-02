@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>分页组件示例（10 元素完整版）</title>
+<style>
+  /* ========== 页面演示样式（非组件部分，可删除） ========== */
+  body {
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: #f5f7fa;
+    margin: 0;
+    padding: 24px;
+    color: #333;
+  }
+  .demo-wrap {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  h2 { font-size: 18px; margin: 0 0 16px; }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+  }
+  .data-table th, .data-table td {
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid #eef0f3;
+    font-size: 14px;
+  }
+  .data-table th { background: #fafbfc; color: #666; font-weight: 600; }
+
+  /* ========== 分页组件（必需部分，直接复用） ========== */
+  /* 所有 10 个元素均在同一个 .pagination 容器内 */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;  /* 导航区靠左、信息区靠右 */
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 12px 16px;
+    background: #fff;
+    border-top: 1px solid #eef0f3;
+    font-size: 14px;
+    color: #333;
+    /* 固定定位：贴底不随页面滚动 */
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    box-shadow: 0 -1px 4px rgba(0,0,0,.06);
+    z-index: 100;
+  }
+  /* 内容区底部留白，避免被固定分页栏遮挡 */
+  .pagination-spacer { height: 64px; }
+
+  /* ---- 导航区（第一页/上一页/页码/下一页/最后一页） ---- */
+  .pagination-nav { display: flex; align-items: center; gap: 6px; }
+  .pagination .btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid #dcdfe6;
+    border-radius: 6px;
+    background: #fff;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .pagination .btn:hover:not(:disabled):not(.active) { border-color: #409eff; color: #409eff; }
+  /* 边界状态（第一页/上一页/下一页/最后一页）：禁用置灰 */
+  .pagination .btn:disabled {
+    color: #c0c4cc;
+    cursor: not-allowed;
+    background: #fafafa;
+  }
+  /* 当前页：高亮 */
+  .pagination .btn.active {
+    background: #409eff;
+    border-color: #409eff;
+    color: #fff;
+    cursor: default;
+  }
+  /* 页码省略号（非按钮，仅占位） */
+  .pagination .ellipsis {
+    padding: 0 4px;
+    color: #999;
+    user-select: none;
+  }
+
+  /* ---- 信息/操作区（总数量/分页大小/页面跳转） ---- */
+  .pagination-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .pagination .total { color: #666; white-space: nowrap; }
+  /* 当前页/总页数：独立显式展示 */
+  .pagination .page-info {
+    color: #666;
+    white-space: nowrap;
+    padding-left: 12px;
+    border-left: 1px solid #eef0f3;
+  }
+  .pagination .page-info b { color: #409eff; font-weight: 600; }
+  .pagination .page-size { white-space: nowrap; color: #666; }
+  .pagination .page-size select {
+    height: 32px;
+    padding: 0 6px;
+    border: 1px solid #dcdfe6;
+    border-radius: 6px;
+    background: #fff;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+  }
+  .pagination .jump { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .pagination .jump input {
+    width: 48px;
+    height: 32px;
+    padding: 0 6px;
+    border: 1px solid #dcdfe6;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+    outline: none;
+  }
+  .pagination .jump input:focus { border-color: #409eff; }
+  .pagination .jump input::-webkit-outer-spin-button,
+  .pagination .jump input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .pagination .jump input[type="number"] { -moz-appearance: textfield; }
+</style>
+</head>
+<body>
+<div class="demo-wrap">
+  <h2>用户列表（分页组件示例）</h2>
+  <table class="data-table">
+    <thead>
+      <tr><th>ID</th><th>姓名</th><th>邮箱</th><th>注册时间</th></tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+  <div class="pagination-spacer"></div>
+</div>
+
+<!-- ========== 分页组件：10 个元素集成于同一容器 ========== -->
+<div class="pagination" id="pagination">
+  <!-- 导航区（左）：第一页 → 上一页 → 页码列表 → 下一页 → 最后一页 -->
+  <div class="pagination-nav">
+    <button class="btn" id="firstBtn" title="第一页">«</button>
+    <button class="btn" id="prevBtn" title="上一页">‹</button>
+    <div class="pagination-nav" id="pageList"><!-- 页码按钮动态生成 --></div>
+    <button class="btn" id="nextBtn" title="下一页">›</button>
+    <button class="btn" id="lastBtn" title="最后一页">»</button>
+  </div>
+
+  <!-- 信息/操作区（右）：当前页/总页数 → 总数量 → 分页大小 → 页面跳转 -->
+  <div class="pagination-info">
+    <!-- 当前页 / 总页数：独立显式展示 -->
+    <span class="page-info">第 <b id="currentPage">1</b> / <b id="totalPages">1</b> 页</span>
+    <span class="total">共 <b id="totalCount">0</b> 条</span>
+    <span class="page-size">
+      每页
+      <select id="pageSizeSelect">
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+      条
+    </span>
+    <span class="jump">
+      跳至
+      <input type="number" id="jumpInput" min="1" placeholder="页码">
+      页
+      <button class="btn" id="jumpBtn">确定</button>
+    </span>
+  </div>
+</div>
+
+<script>
+/* ========== 分页组件逻辑（原生 JS，可直接复用） ========== */
+(function () {
+  // ---- 状态：总数量 / 分页大小 / 当前页 ----
+  const state = {
+    total: 0,        // 总数量
+    pageSize: 10,    // 分页大小
+    current: 1       // 当前页
+  };
+
+  // ---- DOM 引用 ----
+  const el = {
+    firstBtn: document.getElementById('firstBtn'),
+    prevBtn:  document.getElementById('prevBtn'),
+    nextBtn:  document.getElementById('nextBtn'),
+    lastBtn:  document.getElementById('lastBtn'),
+    pageList: document.getElementById('pageList'),
+    currentPage: document.getElementById('currentPage'),
+    totalPagesEl: document.getElementById('totalPages'),
+    totalCount:   document.getElementById('totalCount'),
+    pageSizeSelect: document.getElementById('pageSizeSelect'),
+    jumpInput:  document.getElementById('jumpInput'),
+    jumpBtn:    document.getElementById('jumpBtn')
+  };
+
+  // 总页数（派生：总数量 ÷ 分页大小，向上取整）
+  function totalPages() {
+    return Math.max(1, Math.ceil(state.total / state.pageSize));
+  }
+
+  // 生成页码列表：两端固定首末页，中间省略号折叠
+  // 例：totalPages=13, current=1 → 1 2 3 … 12 13
+  function buildPages(current, total) {
+    const pages = [];
+    if (total <= 7) {                       // 页数少，全量显示
+      for (let i = 1; i <= total; i++) pages.push(i);
+      return pages;
+    }
+    // 页数多：当前页前后各 1 个页码 + 首末页
+    const nums = new Set([1, total, current - 1, current, current + 1]);
+    const sorted = [...nums].filter(n => n >= 1 && n <= total).sort((a, b) => a - b);
+    let prev = 0;
+    for (const n of sorted) {
+      if (n - prev > 1) pages.push('...');  // 断档处插入省略号
+      pages.push(n);
+      prev = n;
+    }
+    return pages;
+  }
+
+  // 渲染分页栏（每次状态变化后调用）
+  function render() {
+    const total = totalPages();
+    // 边界钳制：当前页越界时修正
+    if (state.current < 1) state.current = 1;
+    if (state.current > total) state.current = total;
+
+    // 1) 总数量
+    el.totalCount.textContent = state.total;
+    // 2) 分页大小（select 已绑定，这里同步值）
+    el.pageSizeSelect.value = String(state.pageSize);
+    // 3) 当前页（页码按钮高亮 + 信息区显式展示）
+    el.currentPage.textContent = state.current;
+    // 4) 总页数（信息区显式展示，总页数 = 总数量 ÷ 分页大小向上取整）
+    el.totalPagesEl.textContent = total;
+
+    // 5) 页码列表（含当前页高亮）
+    el.pageList.innerHTML = '';
+    for (const item of buildPages(state.current, total)) {
+      if (item === '...') {
+        const span = document.createElement('span');
+        span.className = 'ellipsis';
+        span.textContent = '…';
+        el.pageList.appendChild(span);
+      } else {
+        const btn = document.createElement('button');
+        btn.className = 'btn' + (item === state.current ? ' active' : '');
+        btn.textContent = item;
+        btn.disabled = item === state.current;
+        btn.addEventListener('click', () => go(item));
+        el.pageList.appendChild(btn);
+      }
+    }
+
+    // 6) 上一页：第一页时禁用
+    el.prevBtn.disabled = state.current <= 1;
+    // 7) 下一页：最后一页时禁用
+    el.nextBtn.disabled = state.current >= total;
+    // 9) 第一页：第一页时禁用
+    el.firstBtn.disabled = state.current <= 1;
+    // 10) 最后一页：最后一页时禁用
+    el.lastBtn.disabled = state.current >= total;
+
+    // 8) 页面跳转：跳转目标钳制到 [1, 总页数]
+    el.jumpInput.max = String(total);
+  }
+
+  // 切换页码并（可选）触发回调
+  function go(page, onChange) {
+    state.current = Math.min(Math.max(1, page), totalPages());
+    render();
+    if (typeof onChange === 'function') onChange();
+  }
+
+  // ---- 事件绑定 ----
+  el.firstBtn.addEventListener('click', () => go(1, onChange));      // 第一页
+  el.prevBtn.addEventListener('click', () => go(state.current - 1, onChange)); // 上一页
+  el.nextBtn.addEventListener('click', () => go(state.current + 1, onChange)); // 下一页
+  el.lastBtn.addEventListener('click', () => go(totalPages(), onChange));       // 最后一页
+  el.jumpBtn.addEventListener('click', () => {
+    const p = parseInt(el.jumpInput.value, 10);
+    if (p) go(p, onChange);                                       // 页面跳转
+  });
+  el.jumpInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') el.jumpBtn.click();
+  });
+  // 分页大小变更：回到第 1 页并重新计算总页数
+  el.pageSizeSelect.addEventListener('change', () => {
+    state.pageSize = Number(el.pageSizeSelect.value);
+    go(1, onChange);
+  });
+
+  // 页面数据变更后的回调（由调用方注入，用于重新渲染数据列表）
+  let onChange = () => {};
+
+  // ---- 对外接口 ----
+  window.pagination = {
+    /** 设置数据：@param {number} total 总数量 */
+    setTotal(t) { state.total = t; go(state.current); },
+    /** 获取当前状态 */
+    getState() { return { ...state, totalPages: totalPages() }; },
+    /** 注册页面变化回调（参数：当前页、分页大小） */
+    onChange(fn) { onChange = fn; },
+    /** 强制重绘 */
+    render
+  };
+
+  /* ========== 以下为演示数据（实际使用时删除） ========== */
+  const names = ['张三', '李四', '王五', '赵六', '孙七', '周八', '吴九', '郑十',
+                 '陈一', '刘二', '林三', '黄四', '杨五', '徐六', '朱七', '高八',
+                 '何九', '罗十', '马一', '宋二', '谢三', '韩四', '唐五', '冯六'];
+  const demoData = Array.from({ length: 128 }, (_, i) => ({
+    id: i + 1,
+    name: names[i % names.length] + (i + 1),
+    email: 'user' + (i + 1) + '@example.com',
+    time: '2026-0' + ((i % 6) + 1) + '-1' + (i % 10) + ' 10:30:00'
+  }));
+  const tbody = document.getElementById('tableBody');
+  const fmt = (n) => String(n).padStart(2, '0');
+
+  function renderTable() {
+    const { current, pageSize } = pagination.getState();
+    const start = (current - 1) * pageSize;
+    const rows = demoData.slice(start, start + pageSize);
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td>${r.id}</td>
+        <td>${r.name}</td>
+        <td>${r.email}</td>
+        <td>${r.time}</td>
+      </tr>`).join('');
+  }
+
+  // 初始化：设置总数量 → 注册数据回调 → 渲染
+  pagination.onChange(renderTable);
+  pagination.setTotal(demoData.length);
+  renderTable();
+})();
+</script>
+</body>
+</html>

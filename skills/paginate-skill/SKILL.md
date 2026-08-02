@@ -1,14 +1,14 @@
 ---
 name: paginate-skill
-description: A universal pagination component skill that provides a fixed-position pagination bar, including page numbers, total pages, total records, and jump input box. / 这是一个通用的分页组件skill，提供固定位置的分页栏，包含页码、总页数、总记录数、跳转输入框等功能
+description: A universal pagination component skill that provides a fixed-position pagination bar, including total records, page size, current page, total pages, page numbers, first/last page, prev/next page, and jump input box. / 这是一个通用的分页组件skill，提供固定位置的分页栏，必须包含总数量、分页大小、当前页、总页数、页码、上一页、下一页、页面跳转、第一页、最后一页共10个分页元素。
 metadata:
-  version: 20260417.0000
+  version: 20260802.2306
   update-url: https://github.com/bonaluo/agent-skills@paginate-skill
 ---
 
 # paginate-skill
 
-这是一个通用的分页组件skill当涉及到分页的时候可使用此技能。
+这是一个通用的分页组件skill，当涉及到分页的时候可使用此技能。
 
 ## When to use
 
@@ -16,9 +16,39 @@ metadata:
 
 ## Instructions
 
-1. 分页栏固定在列表下方，且不随页面滚动而改变位置
-2. 显示当前页码、总页数、总记录数
-3. 提供页码跳转输入框
-4. 支持上一页/下一页导航
-5. 支持直接跳转到第一页/最后一页
+### 必需元素（10 个，缺一不可）
 
+分页组件必须包含以下全部 10 个元素：
+
+1. **总数量**：显示数据总条数，如"共 128 条"
+2. **分页大小**：每页显示条数选择器（如 10 / 20 / 50 / 100 条/页）
+3. **当前页**：当前所在页码，高亮显示
+4. **总页数**：总页数（由总数量 ÷ 分页大小计算）
+5. **页码**：可点击的页码按钮列表（如 1 2 3 … 12 13）
+6. **上一页**：切换到上一页的按钮，第一页时禁用
+7. **下一页**：切换到下一页的按钮，最后一页时禁用
+8. **页面跳转**：输入页码并跳转的输入框 + 跳转按钮
+9. **第一页**：一键跳转到第一页，第一页时禁用
+10. **最后一页**：一键跳转到最后一页，最后一页时禁用
+
+### 元素排布优化规范
+
+所有元素必须放在**同一个组件容器**内，按以下分组排布（从左到右）：
+
+```
+[第一页] [上一页] [页码列表] [下一页] [最后一页]     ← 导航区
+                                                      │
+[第 X / 共 Y 页] [共 Z 条] [每页 N 条 ▾] [跳至 [__] 页] [确定]  ← 信息/操作区
+```
+
+1. **导航区（左）**：第一页、上一页、页码列表、下一页、最后一页依次排列，保持操作流的自然顺序
+2. **信息/操作区（右）**：当前页/总页数、总数量、分页大小选择器、页面跳转依次排列
+3. **当前页/总页数必须显式展示**（如"第 3 / 共 13 页"），不能只靠页码按钮高亮隐含表达；总数量、分页大小放在右侧信息区（"共 Z 条 / 每页 N 条"），避免与导航按钮混杂
+4. 上一页/下一页按钮紧贴页码列表两侧；第一页/最后一页置于导航区两端
+5. 元素间保持统一间距；页数较多时页码用省略号（…）折叠，两端显示首末页码
+6. 当前页高亮、不可点击；边界按钮（第一页/上一页/下一页/最后一页）在边界状态下禁用（置灰、不可点击）
+7. 分页大小变更后回到第 1 页，并重新计算总页数
+
+### 组件示例
+
+参考 [examples/pagination.html](examples/pagination.html)（原生 HTML/CSS/JS 完整可运行示例，所有 10 个元素集成在一个组件内，含演示数据）。
