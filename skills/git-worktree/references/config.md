@@ -22,5 +22,9 @@ worktree 配置用于控制 worktree 创建时的默认行为。
 
 按优先级查找：
 
-1. 当前工作目录 `.agents/git/worktree.config`
-2. 用户目录 `~/.agents/git/worktree.config`
+1. 当前工作目录：
+   - `.<当前Agent目录>/skills/git-worktree/git-worktree.config`
+   - `.agents/skills/git-worktree/git-worktree.config`
+2. 用户主目录：
+   - `~/.<当前Agent目录>/skills/git-worktree/git-worktree.config`
+   - `~/.agents/skills/git-worktree/git-worktree.config`

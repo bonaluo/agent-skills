@@ -2,7 +2,7 @@
 name: git-worktree
 description: Git worktree 管理。创建、列出、删除 worktree，以及在 worktree 间切换。当用户需要新建 worktree、在不同分支间并行工作、清理已完成工作的 worktree 时使用。
 metadata:
-  version: 20260921.0000
+  version: 20260921.202053
   update-url: https://github.com/bonaluo/agent-skills@git-worktree
 ---
 
@@ -15,18 +15,15 @@ Git worktree 管理技能。为用户提供交互式的 worktree 创建流程，
 worktree 配置按以下优先级查找（越靠前优先级越高）：
 
 1. 用户明确指定的参数
-2. 当前工作目录 `.agents/git/worktree.config`
-3. 用户目录 `~/.agents/git/worktree.config`
+2. 当前工作目录中的配置：
+   - `.<当前Agent目录>/skills/git-worktree/git-worktree.config`
+   - `.agents/skills/git-worktree/git-worktree.config`
+3. 用户主目录中的配置：
+   - `~/.<当前Agent目录>/skills/git-worktree/git-worktree.config`
+   - `~/.agents/skills/git-worktree/git-worktree.config`
 4. Skill 默认配置（本 SKILL.md 中定义的默认值）
 
-配置文件为 JSON 结构：
-
-```json
-{
-    "path": "./.agents/worktree",
-    "lan": "zh"
-}
-```
+配置文件为 JSON 结构，文件名为 `git-worktree.config`。
 
 | 字段 | 说明 | 默认值 |
 |------|------|--------|
