@@ -1,0 +1,5 @@
+{
+    "comment": "这是一个配置文件模板，请将 <skill-name> 替换为实际的技能名称",
+    "setting_1": "default_value_1",
+    "setting_2": "default_value_2"
+}
