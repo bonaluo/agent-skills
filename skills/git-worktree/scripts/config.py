@@ -10,7 +10,7 @@ from pathlib import Path
 def get_config_paths(agent_dir=None):
     """
     返回按优先级排序的配置路径列表（高优先级在前）。
-    优先级：当前Agent目录 > 通用 .agents 目录
+    优先级：当前 agent 类型目录 > 通用 .agents 目录；当前工作目录 > 用户主目录
     """
     cwd = Path.cwd()
     home = Path.home()
@@ -32,14 +32,18 @@ def get_config_paths(agent_dir=None):
 
 def load_config(agent_dir=None):
     """从高优先级到低优先级加载配置，返回合并后的配置 dict。"""
-    defaults = {"path": ".agents/worktree", "lan": "zh"}
+    defaults = {"path": ".worktree", "lan": "zh"}
     for path in get_config_paths(agent_dir):
         if path.exists():
             try:
                 with open(path, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                # 我们采用第一个找到的文件作为最终配置（因为优先级已排序），
-                # 或者根据需求决定是否 merge。这里采用第一个匹配的文件优先级最高。
+                
+                # 空字符串视为无值，回退默认
+                if isinstance(data.get("path"), str) and not data["path"].strip():
+                    data.pop("path")
+                
+                # 我们采用第一个找到的文件作为最终配置（因为优先级已排序）
                 return {**defaults, **data}
             except (json.JSONDecodeError, OSError) as e:
                 print(f"警告: 无法读取 {path}: {e}", file=sys.stderr)
