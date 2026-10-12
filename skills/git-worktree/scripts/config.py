@@ -42,6 +42,8 @@ def load_config(agent_dir=None):
                 # 空字符串视为无值，回退默认
                 if isinstance(data.get("path"), str) and not data["path"].strip():
                     data.pop("path")
+                if isinstance(data.get("lan"), str) and not data["lan"].strip():
+                    data.pop("lan")
                 
                 # 我们采用第一个找到的文件作为最终配置（因为优先级已排序）
                 return {**defaults, **data}
