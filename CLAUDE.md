@@ -15,6 +15,7 @@ skills/                         # 已发布的技能
     ├── scriptcat-skill/        # 浏览器用户脚本开发
     ├── podman-skill/           # 容器操作
     ├── docker-deploy/          # Docker 标准化构建部署流程
+    ├── android/                # Android 真机/模拟器调试
     └── paginate-skill/         # 分页组件
 ```
 
@@ -53,6 +54,7 @@ skill-name/
 | docker-deploy | Docker 标准化构建部署，Dockerfile → Compose → env → 多环境 |
 | paginate-skill | 固定位置分页 UI 组件 |
 | doc-manage | 结构化文档管理，使用 index.doc.md 索引，分类子目录组织 |
+| android | 通过 adb 操控与调试 Android 真机/模拟器：截屏、注入手势、定位控件、量测像素、日志、模拟器、构建安装、帧性能 |
 | skill-creator | 创建或更新技能 |
 
 ## 技能创建器参考
