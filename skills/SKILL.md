@@ -1,5 +1,5 @@
 ---
-name: agent-install-location
+name: skill-install-location
 description: "Agent 通用技能/工具安装位置决策:~/.agents 通用全局、项目 .agents、专用 agent 目录、Hermes 全局 skill 目录四路判断."
 version: 1.0.0
 author: Hermes Agent + xia
@@ -26,7 +26,7 @@ metadata:
 | **①** | **特定 coding agent 专属目录** | 该技能是某个 agent 的**专属技能**（只有该 agent 认识，不兼容通用约定） | Claude Code 的专属 workflow、Codex 专属 prompt |
 | **②** | **项目根目录 `.agents/`** | 项目特定的 skill（如某个接口的测试约定、某项目编码规范） | `~/proj/.agents/api-test/` |
 | **③** | **通用全局 `~/.agents/`** | 大多数 coding agent **直接兼容**、跨项目通用的技能 | Docker 规范、Compose 规范、通用工具封装 |
-| **④** | **Hermes 全局 skill 目录** | 只给 Hermes 用的 skill（本 skill 就放在这里：`~/.hermes/skills/<cat>/<name>/SKILL.md`） | `~/.hermes/skills/autonomous-ai-agents/agent-install-location/` |
+| **④** | **Hermes 全局 skill 目录** | 只给 Hermes 用的 skill（本 skill 就放在这里：`~/.hermes/skills/<cat>/<name>/SKILL.md`） | `~/.hermes/skills/autonomous-ai-agents/skill-install-location/` |
 
 **决策流程（四问）：**
 
@@ -89,8 +89,8 @@ ln -sfn ~/.agents/<agent-name>/original-install ~/.agents/cli-tool-name
 
 ## 5. 本 skill 的位置与引用
 
-- **Hermes 全局技能路径**: `~/.hermes/skills/autonomous-ai-agents/agent-install-location/SKILL.md`
-- **加载方式**: 本技能随 Hermes 全局 skills 自动加载，会话内通过 `skill_view(name='agent-install-location')` 读取。
+- **Hermes 全局技能路径**: `~/.hermes/skills/autonomous-ai-agents/skill-install-location/SKILL.md`
+- **加载方式**: 本技能随 Hermes 全局 skills 自动加载，会话内通过 `skill_view(name='skill-install-location')` 读取。
 - **归属**: 本 skill 是 **Hermes 全局 skill**，不是通用 agent 技能，因此它本身存到 **④**，而非 `~/.agents`。
 
 ---
